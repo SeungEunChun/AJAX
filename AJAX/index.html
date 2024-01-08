@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Load 메소드는 태그형태 그대로 퍼옴 / AJAX를 이용해서 데이터만</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!--
+        Load -> 태그형태 그대로
+        Ajax -> 서버의 DB형 , Xml , Json , Txt
+        데이터 전송중에 손상을 막는 방법 = 데이터를 문자화 하여 송신한다.
+
+        비동기통신 : 요청을 줘야하는 파일
+        -> 서버의 어느 파일에 가서 받아 오라는 의미
+        type : 4개
+        GET , POST , PUT , DELETE
+    -->
+    <div id="Gnb">
+        <ul>
+
+        </ul>
+    </div>
+    <script>
+        // parse() : 분쇄 <-> format() : 조립
+        // 도메인/경로/파일명.확장자?변수=값&변수=값
+        //GET 타입은 오브젝트 내부에 데이터가 없어도 되지만, POST 타입은 data가 빈값이라도 공간이 할당되어있어야 한다.
+        $.ajax(
+            {
+                type: "GET", //타입 (get, post , put , delete)
+                url: "/AJAX/data/navi.txt", //요청할 서버 url
+                dataType: "text", //데이터타입 (html,xml,json,text 등등)
+                success: function (result) { // 결과 성공 콜백함수
+                    console.log(result, typeof result);
+
+                    const navidata = result.split("|");
+                    console.log(navidata, typeof navidata, Array.isArray(navidata));
+                    let navitag = ``;
+                    for (x in navidata) {
+                        navitag += `<li>${navidata[x]}</li>`;
+
+                    }
+                    $("#Gnb ul").html(navitag)
+
+
+                },
+                error: function (request, status, error) { // 결과 에러 콜백함수
+                    console.log(request, error); //에러 출력 (이유 두가지)
+                }
+            }
+        )
+    </script>
+</body>
+
+</html>
