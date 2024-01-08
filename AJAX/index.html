@@ -32,6 +32,10 @@
         </ul>
 
     </div>
+
+    <div id="Gnbjson">
+        <ul></ul>
+    </div>
     <script>
         // parse() : 분쇄 <-> format() : 조립
         // 도메인/경로/파일명.확장자?변수=값&변수=값
@@ -61,27 +65,60 @@
         //     }
         // )
 
-        $.ajax(
-            {
-                type: "GET", //타입 (get, post , put , delete)
-                url: "/AJAX/data/navi.xml", //요청할 서버 url
-                dataType: "xml",
-                success: function (result) { // 결과 성공 콜백함수
-                    console.log(result, typeof result);
-                    let navitag = '';
-                    $(result).find("fruits").children().each(function () {
-                        //$로 result에게 제이쿼리 문법이 적용되도록 함
-                        navitag += `<li>${$(this).text()}</li>`
-                    })
+        // $.ajax(
+        //     {
+        //         type: "GET", //타입 (get, post , put , delete)
+        //         url: "/AJAX/data/navi.xml", //요청할 서버 url
+        //         dataType: "xml",
+        //         success: function (result) { // 결과 성공 콜백함수
+        //             console.log(result, typeof result);
+        //             let navitag = '';
+        //             $(result).find("fruits").children().each(function () {
+        //                 //$로 result에게 제이쿼리 문법이 적용되도록 함
+        //                 navitag += `<li>${$(this).text()}</li>`
+        //             })
 
-                    $("#Gnbxml ul").html(navitag);
+        //             $("#Gnbxml ul").html(navitag);
 
-                },
-                error: function (request, status, error) { // 결과 에러 콜백함수
-                    console.log(request, error); //에러 출력 (이유 두가지)
-                }
+        //         },
+        //         error: function (request, status, error) { // 결과 에러 콜백함수
+        //             console.log(request, error); //에러 출력 (이유 두가지)
+        //         }
+        //     }
+        // )
+
+        $.ajax({
+            type: "GET",
+            url: "/AJAX/data/navi.json",
+            dataType: "json",
+            success: function (data) {
+                console.log(data, typeof data, Array.isArray(data));
+
+                // 데이터를 배열로 변환
+                data = Array.isArray(data) ? data : [data];
+
+                // 'name' 속성을 가진 객체들만 필터링하여 이름만 추출합니다.
+                let filteredNames = data.filter(item => item.hasOwnProperty('name')).map(item => item.name);
+
+                // 'Gnbjson' 클래스를 가진 엘리먼트 내부의 <ul>에 이름 목록을 업데이트합니다.
+                let navitags = filteredNames.map(name => {
+                    // 해당 이름에 대한 객체를 찾음
+                    let item = data.find(item => item.name === name);
+
+                    // 만약 'sale' 속성이 존재한다면 새로운 태그 추가
+                    if (item.sale.length > 0) {
+                        return `<li>${name} (Sale: ${item.sale})</li>`;
+                    } else {
+                        return `<li>${name}</li>`;
+                    }
+                }).join('');
+
+                $("#Gnbjson ul").html(navitags);
             }
-        )
+        });
+
+
+
     </script>
 </body>
 
