@@ -25,27 +25,56 @@
 
         </ul>
     </div>
+
+    <div id="Gnbxml">
+        <ul>
+
+        </ul>
+
+    </div>
     <script>
         // parse() : 분쇄 <-> format() : 조립
         // 도메인/경로/파일명.확장자?변수=값&변수=값
         //GET 타입은 오브젝트 내부에 데이터가 없어도 되지만, POST 타입은 data가 빈값이라도 공간이 할당되어있어야 한다.
+        // $.ajax(
+        //     {
+        //         type: "GET", //타입 (get, post , put , delete)
+        //         url: "/AJAX/data/navi.txt", //요청할 서버 url
+        //         dataType: "text", //데이터타입 (html,xml,json,text 등등)
+        //         success: function (result) { // 결과 성공 콜백함수
+        //             console.log(result, typeof result);
+
+        //             const navidata = result.split("|");
+        //             console.log(navidata, typeof navidata, Array.isArray(navidata));
+        //             let navitag = ``;
+        //             for (x in navidata) {
+        //                 navitag += `<li>${navidata[x]}</li>`;
+
+        //             }
+        //             $("#Gnb ul").html(navitag)
+
+
+        //         },
+        //         error: function (request, status, error) { // 결과 에러 콜백함수
+        //             console.log(request, error); //에러 출력 (이유 두가지)
+        //         }
+        //     }
+        // )
+
         $.ajax(
             {
                 type: "GET", //타입 (get, post , put , delete)
-                url: "/AJAX/data/navi.txt", //요청할 서버 url
-                dataType: "text", //데이터타입 (html,xml,json,text 등등)
+                url: "/AJAX/data/navi.xml", //요청할 서버 url
+                dataType: "xml",
                 success: function (result) { // 결과 성공 콜백함수
                     console.log(result, typeof result);
+                    let navitag = '';
+                    $(result).find("fruits").children().each(function () {
+                        //$로 result에게 제이쿼리 문법이 적용되도록 함
+                        navitag += `<li>${$(this).text()}</li>`
+                    })
 
-                    const navidata = result.split("|");
-                    console.log(navidata, typeof navidata, Array.isArray(navidata));
-                    let navitag = ``;
-                    for (x in navidata) {
-                        navitag += `<li>${navidata[x]}</li>`;
-
-                    }
-                    $("#Gnb ul").html(navitag)
-
+                    $("#Gnbxml ul").html(navitag);
 
                 },
                 error: function (request, status, error) { // 결과 에러 콜백함수
